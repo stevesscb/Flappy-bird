@@ -5,15 +5,26 @@
   background-color: rgb(42, 42, 42);
 }
 
+
+
 heading h1 {
   display: flex;
   justify-content: center;
   padding-top: 80px;
+  padding-bottom: 50px;
   color: white;
 }
 
-.container {
-  width: 200px;
-  height: 200px;
+#wrapper {
+  height: 600px;
+  background-color: rgb(42, 42, 42);
+  display: flex;
+  justify-content: center;
+}
+
+.game-screen {
+  width: 600px;
+  height: 600px;
   background-color: #fff;
+  padding-top: 50px;
 }
