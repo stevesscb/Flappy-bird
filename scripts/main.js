@@ -13,8 +13,9 @@ const CHARACTER_VELOCITY = 2.5
 const BLOCK_VELOCITY = 1.5
 
 //
-// Game Loop
+// GLOBAL Game Variables
 //
+let blockLoop
 let gameLoop
 const $gameScreen = $('#game-screen')
 
@@ -58,6 +59,9 @@ const updateCharacterMovements = () => {
   if (up) newY -= CHARACTER_VELOCITY
   if (down) newY += CHARACTER_VELOCITY
 
+  // TODO modify the up key so that it will "jump" up
+  // TODO Set a constant down velocity
+
   character.position.y = newY
   character.$elem.css('left', x).css('top', newY)
 }
@@ -65,30 +69,31 @@ const updateCharacterMovements = () => {
 //
 // Blocks
 //
-const blocks = [
-  // {
-  //   $elem: $('<div class="block"></div>'),
-  //   position: { x: 550, y: 0 },
-  //   height: 178
-  // }, {
-  //   $elem: $('<div class="block"></div>'),
-  //   position: { x: 550, y: 252 },
-  //   height: 348
-  // }
-]
+const blocks = []
 
 const generateNewBlocks = () => {
   // * generate blocks heights
   const newBlockHeights = genHeight()
 
-  // TODO generate block object
+  // * generate block object
+  const topBlock = {
+    $elem: $('<div class="block"></div>'),
+    position: { x: 550, y: 0 },
+    height: newBlockHeights.topHeight
+  }
 
+  const botBlock = {
+    $elem: $('<div class="block"></div>'),
+    position: { x: 550, y: GAME_HEIGHT - newBlockHeights.botHeight },
+    height: newBlockHeights.botHeight
+  }
 
-  // ? Append block to $gameScreen
-  // block.$elem.appendTo($gameScreen)
+  // * Append block to $gameScreen
+  topBlock.$elem.appendTo($gameScreen)
+  botBlock.$elem.appendTo($gameScreen)
 
-  // ? Add block object to blocks array
-
+  // * Add block object to blocks array
+  blocks.push(topBlock, botBlock)
 }
 
 const updateBlocksMovements = () => {
@@ -109,16 +114,20 @@ const init = () => {
   $(document).on('keydown', handleKeyDown)
   $(document).on('keyup', handleKeyUp)
 
-  generateNewBlocks() // ! Temporary | Will move inside game loop
-
   // Start the game loop
   gameLoop = setInterval(() => {
     updateCharacterMovements()
     updateBlocksMovements()
-
-    // check if character have collided with any blocks
-
+    // TODO check if character have collided at the top or bottom screen
+    // TODO check if character have collided with any blocks
+    // TODO check if blocks is outside of the screen and remove them
   }, LOOP_INTERVAL)
+
+  // Start the generation loop
+  generateNewBlocks()
+  blockLoop = setInterval(() => {
+    generateNewBlocks()
+  }, 3000)
 }
 
 init()
