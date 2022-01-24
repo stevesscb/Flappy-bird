@@ -1,6 +1,7 @@
 const GAME_HEIGHT = 600
 const GAME_WIDTH = 600
 
+
 //sudo code
 //generating the entry hole between the pipes
 // min distance is 70px, max distance 100px
