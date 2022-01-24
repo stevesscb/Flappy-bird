@@ -1,32 +1,38 @@
+const GAME_HEIGHT = 600
+const GAME_WIDTH = 600
 
 //sudo code
 //generating the entry hole between the pipes
 // min distance is 70px, max distance 100px
-
-const generateEntryHole = (min, max)  => {
+const genEntryHeight = (min, max)  => {
   return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
-const entryHole = generateEntryHole(70, 100)
+//generating the total length of pipe
+const genPipesHeight = (entryHeight) => {
+  debugger
+  const allocationHeight = GAME_HEIGHT - entryHeight
 
+  const topHeightPercentage = Math.random().toFixed(2)
 
-//generating the pipes
-//dividing the generateEntryHole value by 2 and storing them into 2 variables
-const generatePipes = () => {
-screenHeight = 600
-pipeLength = screenHeight - entryHole
+  const topHeight = Math.floor(allocationHeight * topHeightPercentage)
+  const botHeight = allocationHeight - topHeight
+
+  return {
+    topHeight,
+    botHeight
+  }
 }
 
+const genHeights = () => {
+  const entryHeight = genEntryHeight(70, 100)
+  const pipeHeight = genPipesHeight(entryHeight)
 
-// const generateRandomInt = (max) => {
-//   return Math.floor(Math.random() * max)
-// }
+  return {
+    ...pipeHeight,
+    entryHeight
+  }
+}
 
-// const generateEquation = () => {
-//   num1 = generateRandomInt(10)
-//   num2 = generateRandomInt(10)
-//   answer = num1 + num2
-
-//   $num1.text(num1)
-//   $num2.text(num2)
-// }
+const heights = genHeights()
+console.log(heights)
