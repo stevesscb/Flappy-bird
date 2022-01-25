@@ -53,8 +53,17 @@ heading h1 {
   background: blue;
 }
 
+#start-screen {
+  background-color: #0c5a9d;
+}
+
 #game-over-screen {
-  background: black;
+  background-color: #000;
+}
+
+
+#game-over-screen,
+#start-screen {
   height: 500px;
   width: 500px;
   margin: 0 auto;
@@ -63,9 +72,23 @@ heading h1 {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 
-#game-over-screen h2 {
+.btn {
+  width: 100px;
+  color: white;
+  margin-top: 50px;
+  min-height: 30px;
+  font-size: large;
+  font-weight: bold;
+}
+
+.btn:hover {
+  cursor: pointer;
+}
+
+h2 {
   text-transform: uppercase;
   color: #fff;
   background-color: #000;
