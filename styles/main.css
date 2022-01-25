@@ -53,6 +53,26 @@ heading h1 {
   background: blue;
 }
 
+#game-over-screen {
+  background: black;
+  height: 500px;
+  width: 500px;
+  margin: 0 auto;
+  border: #bda964 4px solid;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#game-over-screen h2 {
+  text-transform: uppercase;
+  color: #fff;
+  background-color: #000;
+  font-size: 2em;
+  ;
+}
+
 footer {
   background-color: rgb(42, 42, 42);
   width: 100%;
