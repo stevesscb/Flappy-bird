@@ -10,6 +10,7 @@ const CHARACTER_HEIGHT = 50
 const FPS = 60
 const LOOP_INTERVAL = Math.round(1000 / FPS)
 const CHARACTER_VELOCITY = 2.5
+const GRAVITY_VELOCITY = 1.5
 const BLOCK_VELOCITY = 1.5
 
 //
@@ -56,11 +57,12 @@ const updateCharacterMovements = () => {
   const { position: { x, y }, movement: { up, down } } = character
   let newY = y
 
-  if (up) newY -= CHARACTER_VELOCITY
-  if (down) newY += CHARACTER_VELOCITY
-
-  // TODO modify the up key so that it will "jump" up
-  // TODO Set a constant down velocity
+// character moving up and falling down
+  if (up) {
+    newY -= CHARACTER_VELOCITY + 2;
+  } else {
+    newY += GRAVITY_VELOCITY
+  }
 
   character.position.y = newY
   character.$elem.css('left', x).css('top', newY)
@@ -85,7 +87,8 @@ const generateNewBlocks = () => {
   const botBlock = {
     $elem: $('<div class="block"></div>'),
     position: { x: 550, y: GAME_HEIGHT - newBlockHeights.botHeight },
-    height: newBlockHeights.botHeight
+    height: newBlockHeights.botHeight,
+    toBeDeleted: true
   }
 
   // * Append block to $gameScreen
@@ -97,12 +100,18 @@ const generateNewBlocks = () => {
 }
 
 const updateBlocksMovements = () => {
-  for (const block of blocks) {
+  for (let i = blocks.length - 1; i >= 0; i--) {
+    const block = blocks[i]
     const { position: { x, y }, height } = block
     let newX = x - BLOCK_VELOCITY
 
     block.position.x = newX
     block.$elem.css('left', newX).css('top', y).css('height', `${height}px`)
+
+    if (newX <= -50) {
+      block.$elem.remove()
+      blocks.splice(i, 1)
+    }
   }
 }
 
@@ -120,14 +129,13 @@ const init = () => {
     updateBlocksMovements()
     // TODO check if character have collided at the top or bottom screen
     // TODO check if character have collided with any blocks
-    // TODO check if blocks is outside of the screen and remove them
   }, LOOP_INTERVAL)
 
   // Start the generation loop
   generateNewBlocks()
   blockLoop = setInterval(() => {
     generateNewBlocks()
-  }, 3000)
+  }, 6000)
 }
 
 init()
