@@ -15,6 +15,9 @@ const BLOCK_VELOCITY = 1.5
 let blockLoop
 let gameLoop
 const $gameScreen = $('#game-screen')
+const $startBtn = $('.start-btn')
+const $startScreen = $('#start-screen')
+const $gameOverScreen = $('#game-over-screen')
 
 // Character | Object
 const character = {
@@ -120,6 +123,8 @@ const updateBlocksMovements = () => {
 
 // Game | Start Game
 const startGame = () => {
+  // Removes start screen when play is clicked
+  $startScreen.css("display", "none");
   // Add Character To Screen
   character.$elem.appendTo($gameScreen)
 
@@ -150,7 +155,7 @@ const init = () => {
   $(document).on('keydown', handleKeyDown)
   $(document).on('keyup', handleKeyUp)
 
-  // startGame()
+  $startScreen.on('click', $startBtn, startGame)
 }
 
 init()

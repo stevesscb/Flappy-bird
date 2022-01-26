@@ -55,15 +55,6 @@ heading h1 {
 
 #start-screen {
   background-color: #0c5a9d;
-}
-
-#game-over-screen {
-  background-color: #000;
-}
-
-
-#game-over-screen,
-#start-screen {
   height: 500px;
   width: 500px;
   margin: 0 auto;
@@ -75,7 +66,25 @@ heading h1 {
   flex-direction: column;
 }
 
-.btn {
+#start-screen h2 {
+  background-color: #0c5a9d;
+}
+
+#game-over-screen {
+  background-color: #000;
+  height: 500px;
+  width: 500px;
+  margin: 0 auto;
+  border: #bda964 4px solid;
+  border-radius: 50%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.start-btn,
+.reset-btn {
   width: 100px;
   color: white;
   margin-top: 50px;
