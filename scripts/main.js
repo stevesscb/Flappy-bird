@@ -20,6 +20,7 @@ const $startBtn = $('.start-btn')
 const $resetBtn = $('.reset-btn')
 const $startScreen = $('#start-screen')
 const $gameOverScreen = $('#game-over-screen')
+const $score = $('#score')
 
 // Character | Object
 const character = {
@@ -120,16 +121,17 @@ const updateBlocksMovements = () => {
       block.$elem.remove()
       blocks.splice(i, 1)
       score += 1
-      console.log("added point", score)
     }
   }
 }
 
 // Game | Start Game
 const startGame = () => {
+
   // Removes start screen when play is clicked
   $startScreen.css("display", "none");
   $gameOverScreen.css("display", "none")
+
 
   // Re-Initialize Variables
   character.$elem.appendTo($gameScreen) // Add Character To Screen
@@ -141,7 +143,7 @@ const startGame = () => {
   gameLoop = setInterval(() => {
     updateCharacterMovements()
     updateBlocksMovements()
-    // TODO check if character have collided at the top or bottom screen
+
     // TODO check if character have collided with any blocks
   }, LOOP_INTERVAL)
 
@@ -154,7 +156,9 @@ const startGame = () => {
 
 // Game | Stop Game
 const stopGame = () => {
-  console.log(score / 2)
+  // update score
+  $score.text(`score: ${score / 2}`) // Add score to h3
+
   // Show game over screen when game ended
   $gameOverScreen.css("display", "flex");
 
