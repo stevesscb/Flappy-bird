@@ -14,8 +14,10 @@ const BLOCK_VELOCITY = 1.5
 // GLOBAL | Game Variables
 let blockLoop
 let gameLoop
+let score
 const $gameScreen = $('#game-screen')
 const $startBtn = $('.start-btn')
+const $resetBtn = $('.reset-btn')
 const $startScreen = $('#start-screen')
 const $gameOverScreen = $('#game-over-screen')
 
@@ -75,7 +77,7 @@ const updateCharacterMovements = () => {
 }
 
 // Blocks | Array
-const blocks = []
+let blocks
 
 // Blocks | Block Generation
 const generateNewBlocks = () => {
@@ -117,6 +119,8 @@ const updateBlocksMovements = () => {
     if (newX <= -50) {
       block.$elem.remove()
       blocks.splice(i, 1)
+      score += 1
+      console.log("added point", score)
     }
   }
 }
@@ -125,8 +129,13 @@ const updateBlocksMovements = () => {
 const startGame = () => {
   // Removes start screen when play is clicked
   $startScreen.css("display", "none");
-  // Add Character To Screen
-  character.$elem.appendTo($gameScreen)
+  $gameOverScreen.css("display", "none")
+
+  // Re-Initialize Variables
+  character.$elem.appendTo($gameScreen) // Add Character To Screen
+  character.position = { x: 100, y: 275 } // Reset Character Position
+  blocks = [] // Reset Blocks
+  score = 0 // Reset Score
 
   // Start the game loop
   gameLoop = setInterval(() => {
@@ -145,8 +154,19 @@ const startGame = () => {
 
 // Game | Stop Game
 const stopGame = () => {
+  console.log(score / 2)
+  // Show game over screen when game ended
+  $gameOverScreen.css("display", "flex");
+
+  // Remove Character From Screen
+  character.$elem.remove()
+
+  // Stop the game loop
   clearInterval(blockLoop)
+
+  // Stop the generation loop
   clearInterval(gameLoop)
+  $('.block').remove()
 }
 
 // Game | Initialization
@@ -156,6 +176,7 @@ const init = () => {
   $(document).on('keyup', handleKeyUp)
 
   $startScreen.on('click', $startBtn, startGame)
+  $gameOverScreen.on('click', $resetBtn, startGame)
 }
 
 init()

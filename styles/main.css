@@ -93,7 +93,8 @@ heading h1 {
   font-weight: bold;
 }
 
-.btn:hover {
+.start-btn:hover,
+.reset-btn:hover {
   cursor: pointer;
 }
 
