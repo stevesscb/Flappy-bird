@@ -48,7 +48,6 @@ heading h3 {
   height: 50px;
   position: absolute;
   background-image: url(/images/bird.png);
-  background-repeat: no-repeat;
   background-size: cover;
   background-color: transparent;
 }

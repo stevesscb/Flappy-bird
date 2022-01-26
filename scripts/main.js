@@ -7,7 +7,7 @@ const CHARACTER_WIDTH = 50
 const CHARACTER_HEIGHT = 50
 const FPS = 60
 const LOOP_INTERVAL = Math.round(1000 / FPS)
-const CHARACTER_VELOCITY = 4.5
+const CHARACTER_VELOCITY = 3.5
 const GRAVITY_VELOCITY = 1.5
 const BLOCK_VELOCITY = 1.5
 
@@ -21,6 +21,8 @@ const $resetBtn = $('.reset-btn')
 const $startScreen = $('#start-screen')
 const $gameOverScreen = $('#game-over-screen')
 const $score = $('#score')
+const $character = $('#character')
+const $pipe = $('.block')
 
 // Character | Object
 const character = {
@@ -57,6 +59,8 @@ const updateCharacterMovements = () => {
   const { position: { x, y }, movement: { up } } = character
   let newY = y
 
+
+// Character collides with top and bottom of screen
   if (up) {
     if (y - CHARACTER_VELOCITY <= 0) {
       newY = 0
@@ -72,6 +76,9 @@ const updateCharacterMovements = () => {
       newY += GRAVITY_VELOCITY
     }
   }
+console.log(character.position, "character")
+
+// Character collides with pipe
 
   character.position.y = newY
   character.$elem.css('left', x).css('top', newY)
@@ -114,6 +121,8 @@ const updateBlocksMovements = () => {
     const { position: { x, y }, height } = block
     let newX = x - BLOCK_VELOCITY
 
+    console.log(block.position, "block")
+
     block.position.x = newX
     block.$elem.css('left', newX).css('top', y).css('height', `${height}px`)
 
@@ -124,6 +133,7 @@ const updateBlocksMovements = () => {
     }
   }
 }
+
 
 // Game | Start Game
 const startGame = () => {
