@@ -1,33 +1,34 @@
 import genHeight from './gen-height.js'
 
-//
-// GLOBAL CONSTANTS
-//
+// GLOBAL | CONSTANTS
 const GAME_HEIGHT = 600
 const GAME_WIDTH = 600
 const CHARACTER_WIDTH = 50
 const CHARACTER_HEIGHT = 50
 const FPS = 60
 const LOOP_INTERVAL = Math.round(1000 / FPS)
-const CHARACTER_VELOCITY = 2.5
+const CHARACTER_VELOCITY = 4.5
+const GRAVITY_VELOCITY = 1.5
 const BLOCK_VELOCITY = 1.5
 
-//
-// Game Loop
-//
+// GLOBAL | Game Variables
+let blockLoop
 let gameLoop
+let score
 const $gameScreen = $('#game-screen')
+const $startBtn = $('.start-btn')
+const $resetBtn = $('.reset-btn')
+const $startScreen = $('#start-screen')
+const $gameOverScreen = $('#game-over-screen')
 
-//
-// Character
-//
+// Character | Object
 const character = {
   $elem: $('<div id="character"></div>'),
   position: { x: 100, y: 275 },
   movement: { up: false, down: false }
 }
 
-// Toggle which direction the character is moving to
+// Character | Toggle which direction the character is moving to
 const setCharacterMovement = (value, keyCode) => {
   switch (keyCode) {
     case 32:
@@ -40,85 +41,142 @@ const setCharacterMovement = (value, keyCode) => {
   }
 }
 
-// Handling Key Down
+// Character | Handling Key Down
 const handleKeyDown = (e) => {
   setCharacterMovement(true, e.keyCode)
 }
 
-// Handling Key Up
+// Character | Handling Key Up
 const handleKeyUp = (e) => {
   setCharacterMovement(false, e.keyCode)
 }
 
-// Every time this gets invoked, update character position
+// Character | Every time this gets invoked, update character position
 const updateCharacterMovements = () => {
-  const { position: { x, y }, movement: { up, down } } = character
+  const { position: { x, y }, movement: { up } } = character
   let newY = y
 
-  if (up) newY -= CHARACTER_VELOCITY
-  if (down) newY += CHARACTER_VELOCITY
+  if (up) {
+    if (y - CHARACTER_VELOCITY <= 0) {
+      newY = 0
+      stopGame()
+    } else {
+      newY -= CHARACTER_VELOCITY
+    }
+  } else {
+    if (y + GRAVITY_VELOCITY >= 550) {
+      newY = 550
+      stopGame()
+    } else {
+      newY += GRAVITY_VELOCITY
+    }
+  }
 
   character.position.y = newY
   character.$elem.css('left', x).css('top', newY)
 }
 
-//
-// Blocks
-//
-const blocks = [
-  // {
-  //   $elem: $('<div class="block"></div>'),
-  //   position: { x: 550, y: 0 },
-  //   height: 178
-  // }, {
-  //   $elem: $('<div class="block"></div>'),
-  //   position: { x: 550, y: 252 },
-  //   height: 348
-  // }
-]
+// Blocks | Array
+let blocks
 
+// Blocks | Block Generation
 const generateNewBlocks = () => {
   // * generate blocks heights
   const newBlockHeights = genHeight()
 
-  // TODO generate block object
+  // * generate block object
+  const topBlock = {
+    $elem: $('<div class="block"></div>'),
+    position: { x: 550, y: 0 },
+    height: newBlockHeights.topHeight
+  }
 
+  const botBlock = {
+    $elem: $('<div class="block"></div>'),
+    position: { x: 550, y: GAME_HEIGHT - newBlockHeights.botHeight },
+    height: newBlockHeights.botHeight,
+    toBeDeleted: true
+  }
 
-  // ? Append block to $gameScreen
-  // block.$elem.appendTo($gameScreen)
+  // * Append block to $gameScreen
+  topBlock.$elem.appendTo($gameScreen)
+  botBlock.$elem.appendTo($gameScreen)
 
-  // ? Add block object to blocks array
-
+  // * Add block object to blocks array
+  blocks.push(topBlock, botBlock)
 }
 
+// Blocks | Movement
 const updateBlocksMovements = () => {
-  for (const block of blocks) {
+  for (let i = blocks.length - 1; i >= 0; i--) {
+    const block = blocks[i]
     const { position: { x, y }, height } = block
     let newX = x - BLOCK_VELOCITY
 
     block.position.x = newX
     block.$elem.css('left', newX).css('top', y).css('height', `${height}px`)
+
+    if (newX <= -50) {
+      block.$elem.remove()
+      blocks.splice(i, 1)
+      score += 1
+      console.log("added point", score)
+    }
   }
 }
 
-const init = () => {
-  // Add Character To Screen
-  character.$elem.appendTo($gameScreen)
+// Game | Start Game
+const startGame = () => {
+  // Removes start screen when play is clicked
+  $startScreen.css("display", "none");
+  $gameOverScreen.css("display", "none")
 
-  // Add key event listeners
-  $(document).on('keydown', handleKeyDown)
-  $(document).on('keyup', handleKeyUp)
-
-  generateNewBlocks() // ! Temporary | Will move inside game loop
+  // Re-Initialize Variables
+  character.$elem.appendTo($gameScreen) // Add Character To Screen
+  character.position = { x: 100, y: 275 } // Reset Character Position
+  blocks = [] // Reset Blocks
+  score = 0 // Reset Score
 
   // Start the game loop
   gameLoop = setInterval(() => {
     updateCharacterMovements()
     updateBlocksMovements()
-
-    // check if character have collided with any blocks
-
+    // TODO check if character have collided at the top or bottom screen
+    // TODO check if character have collided with any blocks
   }, LOOP_INTERVAL)
+
+  // Start the generation loop
+  generateNewBlocks()
+  blockLoop = setInterval(() => {
+    generateNewBlocks()
+  }, 6000)
+}
+
+// Game | Stop Game
+const stopGame = () => {
+  console.log(score / 2)
+  // Show game over screen when game ended
+  $gameOverScreen.css("display", "flex");
+
+  // Remove Character From Screen
+  character.$elem.remove()
+
+  // Stop the game loop
+  clearInterval(blockLoop)
+
+  // Stop the generation loop
+  clearInterval(gameLoop)
+  $('.block').remove()
+}
+
+// Game | Initialization
+const init = () => {
+  // Add key event listeners
+  $(document).on('keydown', handleKeyDown)
+  $(document).on('keyup', handleKeyUp)
+
+  $startScreen.on('click', $startBtn, startGame)
+  $gameOverScreen.on('click', $resetBtn, startGame)
 }
 
 init()
