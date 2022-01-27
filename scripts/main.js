@@ -8,9 +8,9 @@ const CHARACTER_HEIGHT = 50
 const BLOCK_WIDTH = 50
 const FPS = 60
 const LOOP_INTERVAL = Math.round(1000 / FPS)
-const CHARACTER_VELOCITY = 4.5
-const GRAVITY_VELOCITY = 1.5
-const BLOCK_VELOCITY = 1.5
+const CHARACTER_VELOCITY = 4
+const GRAVITY_VELOCITY = 1.8
+const BLOCK_VELOCITY = 2.5
 
 // GLOBAL | Game Variables
 let blockLoop
@@ -22,8 +22,11 @@ const $resetBtn = $('.reset-btn')
 const $startScreen = $('#start-screen')
 const $gameOverScreen = $('#game-over-screen')
 const $score = $('#score')
-const $character = $('#character')
-const $pipe = $('.block')
+//About screen
+const $aboutScreen = $('#about-screen')
+const $closeBtn = $('.close-btn')
+const $aboutBtn = $('#about-btn')
+const $footer = $('footer')
 
 // Character | Object
 const character = {
@@ -79,7 +82,6 @@ const updateCharacterMovements = () => {
       newY += GRAVITY_VELOCITY
     }
   }
-  console.log(character.position, "character")
 
 // Character collides with pipe
   character.position.y = newY
@@ -124,8 +126,6 @@ const updateBlocksMovements = () => {
     const { position: { x, y }, height } = block
     let newX = x - BLOCK_VELOCITY
 
-    console.log(block.position, "block")
-
     block.position.x = newX
     block.$elem.css('left', newX).css('top', y).css('height', `${height}px`)
 
@@ -144,7 +144,7 @@ const startGame = () => {
   // Removes start screen when play is clicked
   $startScreen.css("display", "none");
   $gameOverScreen.css("display", "none")
-
+  $score.css("visibility", "hidden")
 
   // Re-Initialize Variables
   character.$elem.appendTo($gameScreen) // Add Character To Screen
@@ -156,7 +156,6 @@ const startGame = () => {
   gameLoop = setInterval(() => {
     updateCharacterMovements()
     updateBlocksMovements()
-
 
   const {position: {x: cX, y: cY}, height: cH, width: cW  } = character
 
@@ -170,21 +169,32 @@ const startGame = () => {
         }
   }
 
-    // TODO check if character have collided with any blocks
   }, LOOP_INTERVAL)
 
   // Start the generation loop
   generateNewBlocks()
   blockLoop = setInterval(() => {
     generateNewBlocks()
-  }, 6000)
+  }, 4000)
+}
+
+// About | open
+const aboutScreen = () => {
+  $aboutScreen.css("display", "flex");
+  $startScreen.css("display", "none");
+}
+
+// About | close
+const closeAbout = () => {
+  $aboutScreen.css("display", "none");
+  $startScreen.css("display", "flex");
 }
 
 // Game | Stop Game
 const stopGame = () => {
-  // update score
+  // update score$score.css
   $score.text(`score: ${score / 2}`) // Add score to h3
-
+  $score.css("visibility", "visible")
   // Show game over screen when game ended
   $gameOverScreen.css("display", "flex");
 
@@ -200,13 +210,17 @@ const stopGame = () => {
 }
 
 // Game | Initialization
-const init = () => {
+const init = (e) => {
   // Add key event listeners
   $(document).on('keydown', handleKeyDown)
   $(document).on('keyup', handleKeyUp)
 
   $startScreen.on('click', $startBtn, startGame)
+
   $gameOverScreen.on('click', $resetBtn, startGame)
+
+  $footer.on('click', $aboutBtn, aboutScreen)
+  $aboutScreen.on('click', $closeBtn, closeAbout)
 }
 
 init()

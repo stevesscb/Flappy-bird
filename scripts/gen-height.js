@@ -22,7 +22,7 @@ const genPipesHeight = (entryHeight) => {
 }
 
 const genHeights = () => {
-  const entryHeight = genEntryHeight(100, 150)
+  const entryHeight = genEntryHeight(100, 160)
   const pipeHeight = genPipesHeight(entryHeight)
 
   return pipeHeight

@@ -21,6 +21,7 @@
 </head>
 
 <body>
+
   <heading>
     <h1>Flappy Bird</h1>
     <h3 id="score"></h3>
@@ -28,6 +29,15 @@
 
   <div id="wrapper">
     <div id="game-screen">
+      <div id="about-screen">
+        <h2>About</h2>
+        <p>This was a remake of the game 'Flappy bird' as a project for training purposes only.
+          This game was constructed using HTML, CSS javaScript / jquery.</p><br>
+        <p> RULES: <br>
+          Press space bar to fly the bird through the obstacles - make sure you don't hit the walls!
+          remember you cannot fly too high or too low either... good luck!</p>
+        <button type="submit" class="close-btn">close</button>
+      </div>
       <div id="start-screen">
         <h2>ready?</h2>
         <button type="submit" class="start-btn">Play game</button>
@@ -44,6 +54,9 @@
 
   <footer>
     <h6>Remake by Stephen CB</h6>
+    <ul>
+      <button type="submit" id="about-btn">About</button>
+    </ul>
   </footer>
 </body>
 
