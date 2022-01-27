@@ -53,7 +53,7 @@ heading h3 {
   background-color: #fff;
   padding-top: 50px;
   position: relative;
-  background-image: url(/images/background.jpg);
+  background-image: url(../images/background.jpg);
   background-repeat: no-repeat;
   background-size: cover;
   overflow: hidden;
@@ -63,7 +63,7 @@ heading h3 {
   width: 50px;
   height: 50px;
   position: absolute;
-  background-image: url(/images/bird.png);
+  background-image: url(../images/bird.png);
   background-size: cover;
   background-color: transparent;
 }
@@ -71,7 +71,7 @@ heading h3 {
 .block {
   width: 50px;
   position: absolute;
-  background-image: url(/images/stone2.jpg);
+  background-image: url(../images/stone2.jpg);
   border: #000 solid 4px;
 }
 
