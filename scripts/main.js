@@ -5,6 +5,7 @@ const GAME_HEIGHT = 600
 const GAME_WIDTH = 600
 const CHARACTER_WIDTH = 50
 const CHARACTER_HEIGHT = 50
+const BLOCK_WIDTH = 50
 const FPS = 60
 const LOOP_INTERVAL = Math.round(1000 / FPS)
 const CHARACTER_VELOCITY = 4.5
@@ -20,12 +21,17 @@ const $startBtn = $('.start-btn')
 const $resetBtn = $('.reset-btn')
 const $startScreen = $('#start-screen')
 const $gameOverScreen = $('#game-over-screen')
+const $score = $('#score')
+const $character = $('#character')
+const $pipe = $('.block')
 
 // Character | Object
 const character = {
   $elem: $('<div id="character"></div>'),
   position: { x: 100, y: 275 },
-  movement: { up: false, down: false }
+  movement: { up: false, down: false },
+  height: CHARACTER_HEIGHT,
+  width: CHARACTER_WIDTH
 }
 
 // Character | Toggle which direction the character is moving to
@@ -56,6 +62,8 @@ const updateCharacterMovements = () => {
   const { position: { x, y }, movement: { up } } = character
   let newY = y
 
+
+// Character collides with top and bottom of screen
   if (up) {
     if (y - CHARACTER_VELOCITY <= 0) {
       newY = 0
@@ -71,7 +79,9 @@ const updateCharacterMovements = () => {
       newY += GRAVITY_VELOCITY
     }
   }
+  console.log(character.position, "character")
 
+// Character collides with pipe
   character.position.y = newY
   character.$elem.css('left', x).css('top', newY)
 }
@@ -88,14 +98,15 @@ const generateNewBlocks = () => {
   const topBlock = {
     $elem: $('<div class="block"></div>'),
     position: { x: 550, y: 0 },
-    height: newBlockHeights.topHeight
+    height: newBlockHeights.topHeight,
+    width: BLOCK_WIDTH
   }
 
   const botBlock = {
     $elem: $('<div class="block"></div>'),
     position: { x: 550, y: GAME_HEIGHT - newBlockHeights.botHeight },
     height: newBlockHeights.botHeight,
-    toBeDeleted: true
+    width: BLOCK_WIDTH
   }
 
   // * Append block to $gameScreen
@@ -113,6 +124,8 @@ const updateBlocksMovements = () => {
     const { position: { x, y }, height } = block
     let newX = x - BLOCK_VELOCITY
 
+    console.log(block.position, "block")
+
     block.position.x = newX
     block.$elem.css('left', newX).css('top', y).css('height', `${height}px`)
 
@@ -120,16 +133,18 @@ const updateBlocksMovements = () => {
       block.$elem.remove()
       blocks.splice(i, 1)
       score += 1
-      console.log("added point", score)
     }
   }
 }
 
+
 // Game | Start Game
 const startGame = () => {
+
   // Removes start screen when play is clicked
   $startScreen.css("display", "none");
   $gameOverScreen.css("display", "none")
+
 
   // Re-Initialize Variables
   character.$elem.appendTo($gameScreen) // Add Character To Screen
@@ -141,7 +156,20 @@ const startGame = () => {
   gameLoop = setInterval(() => {
     updateCharacterMovements()
     updateBlocksMovements()
-    // TODO check if character have collided at the top or bottom screen
+
+
+  const {position: {x: cX, y: cY}, height: cH, width: cW  } = character
+
+  for (const block of blocks) {
+    const { position: {x: bX, y: bY}, height: bH, width: bW } = block
+    if (cX < bX + bW &&
+        cX + cW > bX &&
+        cY < bY + bH &&
+        cH + cY > bY) {
+          stopGame()
+        }
+  }
+
     // TODO check if character have collided with any blocks
   }, LOOP_INTERVAL)
 
@@ -154,7 +182,9 @@ const startGame = () => {
 
 // Game | Stop Game
 const stopGame = () => {
-  console.log(score / 2)
+  // update score
+  $score.text(`score: ${score / 2}`) // Add score to h3
+
   // Show game over screen when game ended
   $gameOverScreen.css("display", "flex");
 
