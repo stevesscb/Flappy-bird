@@ -5,9 +5,10 @@ const GAME_HEIGHT = 600
 const GAME_WIDTH = 600
 const CHARACTER_WIDTH = 50
 const CHARACTER_HEIGHT = 50
+const BLOCK_WIDTH = 50
 const FPS = 60
 const LOOP_INTERVAL = Math.round(1000 / FPS)
-const CHARACTER_VELOCITY = 3.5
+const CHARACTER_VELOCITY = 4.5
 const GRAVITY_VELOCITY = 1.5
 const BLOCK_VELOCITY = 1.5
 
@@ -28,7 +29,9 @@ const $pipe = $('.block')
 const character = {
   $elem: $('<div id="character"></div>'),
   position: { x: 100, y: 275 },
-  movement: { up: false, down: false }
+  movement: { up: false, down: false },
+  height: CHARACTER_HEIGHT,
+  width: CHARACTER_WIDTH
 }
 
 // Character | Toggle which direction the character is moving to
@@ -76,10 +79,9 @@ const updateCharacterMovements = () => {
       newY += GRAVITY_VELOCITY
     }
   }
-console.log(character.position, "character")
+  console.log(character.position, "character")
 
 // Character collides with pipe
-
   character.position.y = newY
   character.$elem.css('left', x).css('top', newY)
 }
@@ -96,14 +98,15 @@ const generateNewBlocks = () => {
   const topBlock = {
     $elem: $('<div class="block"></div>'),
     position: { x: 550, y: 0 },
-    height: newBlockHeights.topHeight
+    height: newBlockHeights.topHeight,
+    width: BLOCK_WIDTH
   }
 
   const botBlock = {
     $elem: $('<div class="block"></div>'),
     position: { x: 550, y: GAME_HEIGHT - newBlockHeights.botHeight },
     height: newBlockHeights.botHeight,
-    toBeDeleted: true
+    width: BLOCK_WIDTH
   }
 
   // * Append block to $gameScreen
@@ -153,6 +156,19 @@ const startGame = () => {
   gameLoop = setInterval(() => {
     updateCharacterMovements()
     updateBlocksMovements()
+
+
+  const {position: {x: cX, y: cY}, height: cH, width: cW  } = character
+
+  for (const block of blocks) {
+    const { position: {x: bX, y: bY}, height: bH, width: bW } = block
+    if (cX < bX + bW &&
+        cX + cW > bX &&
+        cY < bY + bH &&
+        cH + cY > bY) {
+          stopGame()
+        }
+  }
 
     // TODO check if character have collided with any blocks
   }, LOOP_INTERVAL)
