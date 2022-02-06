@@ -42,6 +42,7 @@ const setCharacterMovement = (value, keyCode) => {
   switch (keyCode) {
     case 32:
     case 38:
+    case 71:
       character.movement.up = value
       break
     case 40:
